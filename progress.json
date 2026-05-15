@@ -1,0 +1,24 @@
+{
+  "month": 1,
+  "week": 1,
+  "day": 1,
+  "coding_hours_total": 0,
+  "current_streak": 1,
+  "current_focus": "Python basics — CS50P Week 1",
+  "github_url": "https://github.com/cuibusbogdan/ai-journey-os",
+  "last_updated": "2026-05-15",
+  "instagram": {
+    "followers": 29,
+    "posts": 1,
+    "last_updated": "2026-05-15",
+    "target": 10000
+  },
+  "months": [
+    { "name": "Foundation",      "status": "active",   "progress": 5  },
+    { "name": "Python Deep Dive","status": "upcoming",  "progress": 0  },
+    { "name": "ML + fast.ai",   "status": "upcoming",  "progress": 0  },
+    { "name": "LLMs + APIs",    "status": "upcoming",  "progress": 0  },
+    { "name": "Portfolio",      "status": "upcoming",  "progress": 0  },
+    { "name": "Job Hunt",       "status": "upcoming",  "progress": 0  }
+  ]
+}

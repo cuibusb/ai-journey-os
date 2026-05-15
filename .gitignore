@@ -1,0 +1,7 @@
+# Never commit these
+scripts/.env
+scripts/last-caption.txt
+scripts/follower-history.csv
+
+# macOS
+.DS_Store

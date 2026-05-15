@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AI Journey">
+  <meta name="theme-color" content="#0d0d0d">
+  <title>AI Journey OS</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #0d0d0d;
+      color: #e8e8e8;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      padding: 28px 16px 56px;
+    }
+
+    /* ── Header ───────────────────────────────────────── */
+    .header { text-align: center; margin-bottom: 28px; }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 6px;
+    }
+
+    .header .subtitle {
+      font-size: 13px;
+      color: #555;
+    }
+
+    /* ── Stats row ────────────────────────────────────── */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stat-card {
+      background: #161616;
+      border: 1px solid #222;
+      border-radius: 14px;
+      padding: 14px 8px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      font-size: 10px;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-card.followers .stat-value { color: #f472b6; }
+    .stat-card.streak    .stat-value { color: #fb923c; }
+    .stat-card.hours     .stat-value { color: #34d399; }
+
+    /* ── Instagram progress bar ───────────────────────── */
+    .ig-bar-card {
+      background: #161616;
+      border: 1px solid #222;
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+    }
+
+    .bar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .bar-title { font-size: 13px; font-weight: 600; }
+    .bar-pct   { font-size: 12px; color: #555; }
+
+    .bar-track {
+      height: 7px;
+      background: #222;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #a78bfa, #f472b6);
+      border-radius: 99px;
+      transition: width 1s ease;
+      min-width: 3px;
+    }
+
+    .bar-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 6px;
+    }
+
+    .bar-labels span { font-size: 11px; color: #444; }
+
+    /* ── Section label ────────────────────────────────── */
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #444;
+      margin-bottom: 12px;
+    }
+
+    /* ── Rings grid ───────────────────────────────────── */
+    .rings-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .ring-card {
+      background: #161616;
+      border: 1px solid #222;
+      border-radius: 16px;
+      padding: 14px 8px 12px;
+      text-align: center;
+    }
+
+    .ring-card.active {
+      border-color: #3d2d72;
+      background: #19132a;
+    }
+
+    .ring-wrap {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 10px;
+    }
+
+    .ring-svg {
+      width: 60px;
+      height: 60px;
+      transform: rotate(-90deg);
+    }
+
+    .ring-bg {
+      fill: none;
+      stroke: #252525;
+      stroke-width: 5;
+    }
+
+    .ring-arc {
+      fill: none;
+      stroke-width: 5;
+      stroke-linecap: round;
+      /* circumference = 2π×26 ≈ 163.4 */
+      stroke-dasharray: 163.4;
+      transition: stroke-dashoffset 1.2s ease;
+    }
+
+    .ring-pct {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .ring-month {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 2px;
+    }
+
+    .ring-name { font-size: 10px; color: #555; line-height: 1.3; }
+
+    /* Month accent colours */
+    .c1 { stroke: #a78bfa; } .t1 { color: #a78bfa; }
+    .c2 { stroke: #60a5fa; } .t2 { color: #60a5fa; }
+    .c3 { stroke: #34d399; } .t3 { color: #34d399; }
+    .c4 { stroke: #fbbf24; } .t4 { color: #fbbf24; }
+    .c5 { stroke: #f97316; } .t5 { color: #f97316; }
+    .c6 { stroke: #f472b6; } .t6 { color: #f472b6; }
+
+    /* ── Current focus card ───────────────────────────── */
+    .focus-card {
+      background: #19132a;
+      border: 1px solid #3d2d72;
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 24px;
+    }
+
+    .focus-label {
+      font-size: 10px;
+      color: #7c6eb5;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 6px;
+    }
+
+    .focus-text  { font-size: 15px; font-weight: 600; color: #cdbfff; }
+    .focus-week  { font-size: 12px; color: #5a5070; margin-top: 4px; }
+
+    /* ── Footer ───────────────────────────────────────── */
+    .footer { text-align: center; }
+
+    .footer a {
+      color: #444;
+      text-decoration: none;
+      font-size: 12px;
+      transition: color 0.2s;
+    }
+
+    .footer a:hover { color: #a78bfa; }
+    .footer .updated { font-size: 11px; color: #333; margin-top: 8px; }
+
+    /* ── Desktop ──────────────────────────────────────── */
+    @media (min-width: 540px) {
+      body { max-width: 460px; margin: 0 auto; padding: 44px 24px 64px; }
+      .header h1 { font-size: 26px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>AI Journey OS</h1>
+    <p class="subtitle" id="subtitle">Loading…</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card followers">
+      <div class="stat-value" id="s-followers">—</div>
+      <div class="stat-label">Followers</div>
+    </div>
+    <div class="stat-card streak">
+      <div class="stat-value" id="s-streak">—</div>
+      <div class="stat-label">Day streak</div>
+    </div>
+    <div class="stat-card hours">
+      <div class="stat-value" id="s-hours">—</div>
+      <div class="stat-label">Hours coded</div>
+    </div>
+  </div>
+
+  <div class="ig-bar-card">
+    <div class="bar-header">
+      <span class="bar-title">Instagram → 10K</span>
+      <span class="bar-pct" id="ig-pct">0%</span>
+    </div>
+    <div class="bar-track">
+      <div class="bar-fill" id="ig-fill" style="width:0%"></div>
+    </div>
+    <div class="bar-labels">
+      <span id="ig-now">0</span>
+      <span>10,000</span>
+    </div>
+  </div>
+
+  <div class="section-label">6-Month Roadmap</div>
+  <div class="rings-grid" id="rings"></div>
+
+  <div class="focus-card">
+    <div class="focus-label">Currently learning</div>
+    <div class="focus-text" id="focus-text">—</div>
+    <div class="focus-week" id="focus-week"></div>
+  </div>
+
+  <div class="footer">
+    <a id="gh-link" href="#" target="_blank">View on GitHub →</a>
+    <div class="updated" id="updated"></div>
+  </div>
+
+<script>
+  const C = 2 * Math.PI * 26; // SVG circle circumference (r = 26)
+
+  const DEFS = [
+    { label: 'M1', name: 'Foundation',       c: 'c1', t: 't1' },
+    { label: 'M2', name: 'Python Deep Dive', c: 'c2', t: 't2' },
+    { label: 'M3', name: 'ML + fast.ai',     c: 'c3', t: 't3' },
+    { label: 'M4', name: 'LLMs + APIs',      c: 'c4', t: 't4' },
+    { label: 'M5', name: 'Portfolio',         c: 'c5', t: 't5' },
+    { label: 'M6', name: 'Job Hunt',          c: 'c6', t: 't6' },
+  ];
+
+  function buildRings(months, activeMonth) {
+    const grid = document.getElementById('rings');
+    grid.innerHTML = months.map((m, i) => {
+      const d   = DEFS[i];
+      const pct = m.progress || 0;
+      const off = C - (pct / 100) * C;
+      const act = (i + 1 === activeMonth) ? 'active' : '';
+      return `
+        <div class="ring-card ${act}">
+          <div class="ring-wrap">
+            <svg class="ring-svg" viewBox="0 0 64 64">
+              <circle class="ring-bg"  cx="32" cy="32" r="26"/>
+              <circle class="ring-arc ${d.c}" cx="32" cy="32" r="26"
+                stroke-dasharray="${C}"
+                stroke-dashoffset="${pct === 0 ? C : off}"/>
+            </svg>
+            <div class="ring-pct ${d.t}">${pct}%</div>
+          </div>
+          <div class="ring-month ${d.t}">${d.label}</div>
+          <div class="ring-name">${d.name}</div>
+        </div>`;
+    }).join('');
+  }
+
+  function render(d) {
+    document.getElementById('subtitle').textContent =
+      `Day ${d.day || 1} of 180 — Starting from zero`;
+
+    document.getElementById('s-followers').textContent =
+      (d.instagram?.followers || 0).toLocaleString();
+    document.getElementById('s-streak').textContent = d.current_streak || 0;
+    document.getElementById('s-hours').textContent  = d.coding_hours_total || 0;
+
+    const followers = d.instagram?.followers || 0;
+    const target    = d.instagram?.target || 10000;
+    const pct       = Math.min(100, (followers / target) * 100);
+    document.getElementById('ig-pct').textContent    = pct.toFixed(1) + '%';
+    document.getElementById('ig-fill').style.width   = Math.max(0.4, pct) + '%';
+    document.getElementById('ig-now').textContent    = followers.toLocaleString();
+
+    buildRings(d.months || [], d.month || 1);
+
+    document.getElementById('focus-text').textContent = d.current_focus || '—';
+    document.getElementById('focus-week').textContent =
+      `Week ${d.week || 1} · Month ${d.month || 1}`;
+
+    const gh = document.getElementById('gh-link');
+    gh.href = d.github_url || '#';
+    document.getElementById('updated').textContent =
+      `Last updated ${d.last_updated || 'today'}`;
+  }
+
+  fetch('progress.json')
+    .then(r => { if (!r.ok) throw new Error(); return r.json(); })
+    .then(render)
+    .catch(() => {
+      document.getElementById('subtitle').textContent   = 'Cannot load progress.json';
+      document.getElementById('focus-text').textContent = 'Run: python3 -m http.server 8080';
+      document.getElementById('focus-week').textContent = 'then open → localhost:8080';
+    });
+</script>
+
+</body>
+</html>
