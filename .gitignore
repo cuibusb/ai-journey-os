@@ -9,5 +9,8 @@ plan/
 # Private scripts
 scripts/
 
+# Internal config
+CLAUDE.md
+
 # macOS
 .DS_Store
