@@ -6,5 +6,8 @@ scripts/follower-history.csv
 # Private planning docs
 plan/
 
+# Private scripts
+scripts/
+
 # macOS
 .DS_Store
